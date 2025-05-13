@@ -1,0 +1,10 @@
+[project]
+name = "kickall"
+version = "0.1.0"
+description = "kickall Discord Server Bot for CS7641 ML @ GT OMSCS"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "discord>=2.3.2",
+    "pip>=25.1.1"
+]
