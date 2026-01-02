@@ -64,6 +64,32 @@ async def kickMembers(ctx, role: discord.Role, reason: str=None):
     logger.info(summary)
     await ctx.reply(summary)
 
+@bot.command()
+@has_permissions(administrator=True)
+async def clearall(ctx, batches: int = 1):
+    """Clear messages in batches of 100 (up to 10 batches = 1000 messages)"""
+    if batches > 10:
+        await ctx.reply('❌ Maximum 10 batches allowed (1000 messages)')
+        return
+    
+    logger.info(f'{ctx.author} is clearing {batches} batch(es) in {ctx.channel.name}')
+    total_deleted = 0
+    
+    try:
+        for i in range(batches):
+            deleted = await ctx.channel.purge(limit=100)
+            total_deleted += len(deleted)
+            
+            # If we deleted fewer than 100, no more messages to delete
+            if len(deleted) < 100:
+                break
+        
+        confirmation = await ctx.send(f'✅ Cleared {total_deleted} message(s)')
+        await confirmation.delete(delay=5)
+        logger.info(f'Successfully cleared {total_deleted} messages')
+    except Exception as e:
+        logger.error(f'Error clearing messages: {str(e)}')
+
 @bot.event
 async def on_message(message):
     # Log all messages
